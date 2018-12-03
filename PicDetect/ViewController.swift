@@ -10,7 +10,7 @@ import UIKit
 import CoreML
 import Vision
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UITableViewDataSource ,UITableViewDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate,  UITableViewDataSource, UITableViewDelegate {
     //had to add additional classes deleages to that imagePicker.delegate = self works
     
     @IBOutlet weak var tableView: UITableView!
@@ -75,12 +75,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        //let cell = UITableViewCell()
+        if let cell =  tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath) as? MyCoreMLTableViewCell {//dequeue from tableview instead of just making a new cell
+            
+            let observation = observations[indexPath.row]
+            cell.theSmallLabel?.text = "\(observation.identifier) Confidence: \(observation.confidence*100.0)%"
+            
+            return cell
+        }
         
-        let observation = observations[indexPath.row]
-        cell.textLabel?.text = "(observation.identifier) Confidence: \(observation.confidence*100.0)%"
-   
-        return cell
+        return UITableViewCell()
     }
 }
 
